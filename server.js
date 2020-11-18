@@ -53,6 +53,7 @@ app.get('/my-characters',handelGettingData);
 app.get('/character/:id',handelDeatails);
 app.put('/character/:id',handelUpdating);
 app.delete('/character/:id',handelDeleting);
+app.get('/*',handelError);
 
 // --------------------------------
 // ---- Pages Routes functions ----
@@ -74,6 +75,8 @@ superagent.get('http://hp-api.herokuapp.com/api/characters/house/Gryffindor')
    })
     
     res.render('pages/charPage',{result:glArr});
+}).catch(err=>{
+    console.log('There is an error '+err);
 })
 }
 
@@ -87,6 +90,8 @@ superagent.get('http://hp-api.herokuapp.com/api/characters/house/Hufflepuff')
    })
     
     res.render('pages/charPage',{result:glArr});
+}).catch(err=>{
+    console.log('There is an error '+err);
 })
 }
 
@@ -99,6 +104,8 @@ superagent.get('http://hp-api.herokuapp.com/api/characters/house/Ravenclaw')
    })
     
     res.render('pages/charPage',{result:glArr});
+}).catch(err=>{
+    console.log('There is an error '+err);
 })
 }
 
@@ -111,6 +118,8 @@ superagent.get('http://hp-api.herokuapp.com/api/characters/house/Slytherin')
    })
     
     res.render('pages/charPage',{result:glArr});
+}).catch(err=>{
+    console.log('There is an error '+err);
 })
 }
 
@@ -127,6 +136,8 @@ function handelAddingToDatabase(req,res){
     client.query(sql,values)
     .then(()=>{
         res.redirect('/my-characters');
+    }).catch(err=>{
+        console.log('There is an error '+err);
     })
 }
 
@@ -135,6 +146,8 @@ function handelGettingData(req,res){
     client.query(sql)
     .then(data=>{
         res.render('pages/favPage',{result:data.rows});
+    }).catch(err=>{
+        console.log('There is an error '+err);
     })
 }
 
@@ -144,6 +157,8 @@ function handelDeatails(req,res){
     client.query(sql,values)
     .then(data=>{
         res.render('pages/details',{result:data.rows[0]});
+    }).catch(err=>{
+        console.log('There is an error '+err);
     })
 }
 
@@ -153,6 +168,8 @@ function handelUpdating(req,res){
     client.query(sql,values)
     .then(()=>{
         res.redirect('/my-characters');
+    }).catch(err=>{
+        console.log('There is an error '+err);
     })
 }
 
@@ -163,7 +180,13 @@ function handelDeleting(req,res){
     client.query(sql,values)
     .then(()=>{
         res.redirect('/my-characters');
+    }).catch(err=>{
+        console.log('There is an error '+err);
     })
+}
+
+function handelError(req,res){
+    res.status(404).render('pages/error');
 }
 
 // Express Runtime
