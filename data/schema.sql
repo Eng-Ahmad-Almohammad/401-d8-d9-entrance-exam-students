@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS
+users(
+  id SERIAL PRIMARY KEY NOT NULL,
+  charname VARCHAR(256) ,
+  patronus VARCHAR(256) ,
+  alive VARCHAR(256) 
+ 
+);

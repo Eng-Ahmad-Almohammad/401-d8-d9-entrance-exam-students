@@ -43,19 +43,128 @@ app.set('view engine', 'ejs');
 // ----------------------
 // ------- Routes -------
 // ----------------------
-
+app.get('/home',handelHomePage);
+app.get('/house_name/Gryffindor',handeGryffindor);
+app.get('/house_name/Hufflepuff',handeHufflepuff);
+app.get('/house_name/Ravenclaw',handeRavenclaw);
+app.get('/house_name/Slytherin',handeSlytherin);
+app.post('/my-characters',handelAddingToDatabase);
+app.get('/my-characters',handelGettingData);
+app.get('/character/:id',handelDeatails);
+app.put('/character/:id',handelUpdating);
+app.delete('/character/:id',handelDeleting);
 
 // --------------------------------
 // ---- Pages Routes functions ----
 // --------------------------------
 
-
+function handelHomePage(req,res){
+    res.render('pages/home');
+}
 
 // -----------------------------------
 // --- CRUD Pages Routes functions ---
 // -----------------------------------
+function handeGryffindor(req,res){
+    let glArr = [];
+superagent.get('http://hp-api.herokuapp.com/api/characters/house/Gryffindor')
+.then(data=>{
+   data.body.forEach(value=>{
+      glArr.push(new Characters(value));
+   })
+    
+    res.render('pages/charPage',{result:glArr});
+})
+}
 
 
+function handeHufflepuff(req,res){
+    let glArr = [];
+superagent.get('http://hp-api.herokuapp.com/api/characters/house/Hufflepuff')
+.then(data=>{
+   data.body.forEach(value=>{
+      glArr.push(new Characters(value));
+   })
+    
+    res.render('pages/charPage',{result:glArr});
+})
+}
+
+function handeRavenclaw(req,res){
+    let glArr = [];
+superagent.get('http://hp-api.herokuapp.com/api/characters/house/Ravenclaw')
+.then(data=>{
+   data.body.forEach(value=>{
+      glArr.push(new Characters(value));
+   })
+    
+    res.render('pages/charPage',{result:glArr});
+})
+}
+
+function handeSlytherin(req,res){
+    let glArr = [];
+superagent.get('http://hp-api.herokuapp.com/api/characters/house/Slytherin')
+.then(data=>{
+   data.body.forEach(value=>{
+      glArr.push(new Characters(value));
+   })
+    
+    res.render('pages/charPage',{result:glArr});
+})
+}
+
+function Characters(data){
+    this.image = data.image;
+    this.name = data.name;
+    this.patronus = data.patronus;
+    this.alive = data.alive;
+}
+
+function handelAddingToDatabase(req,res){
+    let sql = 'INSERT INTO users(charname, patronus, alive) VALUES ($1, $2, $3);';
+    let values = [req.body.name, req.body.patronus, req.body.alive];
+    client.query(sql,values)
+    .then(()=>{
+        res.redirect('/my-characters');
+    })
+}
+
+function handelGettingData(req,res){
+    let sql = 'SELECT * FROM users;';
+    client.query(sql)
+    .then(data=>{
+        res.render('pages/favPage',{result:data.rows});
+    })
+}
+
+function handelDeatails(req,res){
+    let sql = 'SELECT * FROM users WHERE id=$1;';
+    let values = [req.params.id];
+    client.query(sql,values)
+    .then(data=>{
+        res.render('pages/details',{result:data.rows[0]});
+    })
+}
+
+function handelUpdating(req,res){
+    let sql = 'UPDATE users SET charname=$1, patronus=$2, alive=$3 WHERE id=$4;';
+    let values = [req.body.name, req.body.patronus, req.body.alive, req.params.id];
+    client.query(sql,values)
+    .then(()=>{
+        res.redirect('/my-characters');
+    })
+}
+
+
+function handelDeleting(req,res){
+    let sql = 'DELETE FROM users WHERE id=$1;';
+    let values = [req.params.id];
+    client.query(sql,values)
+    .then(()=>{
+        res.redirect('/my-characters');
+    })
+}
 
 // Express Runtime
 client.connect().then(() => {

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <%- include('nav.ejs') %>
+    <% result.forEach(element=>{ %>
+
+       
+        
+        <h3>Name: <%= element.charname%> </h3>
+        <h3> Patronus:<%= element.patronus%> </h3>
+        <h3> Status:<%= element.alive %> </h3>
+         
+        <form action="/character/<%= element.id%>">
+           
+             <button type="submit">Show Details</button>
+            </form>
+        
+   <% })%>
+</body>
+</html>
